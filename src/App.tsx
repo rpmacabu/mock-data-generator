@@ -92,6 +92,18 @@ function App() {
             </TabsContent>
           </AnimatedHeight>
         </Tabs>
+
+        <footer className="text-center text-sm text-muted-foreground">
+          Created by{" "}
+          <a
+            href="https://rpmacabu.com.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline underline-offset-4 hover:text-foreground"
+          >
+            rpmacabu
+          </a>
+        </footer>
       </div>
 
       <Toaster theme="dark" position="bottom-center" richColors />
