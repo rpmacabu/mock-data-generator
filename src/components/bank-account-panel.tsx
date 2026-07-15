@@ -1,10 +1,10 @@
-import { useState } from "react"
-import { Copy, RefreshCw } from "lucide-react"
-import { toast } from "sonner"
+import { useState } from "react";
+import { Copy, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import {
   Combobox,
   ComboboxContent,
@@ -12,20 +12,20 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/components/ui/combobox"
-import { BANKS, type Bank } from "@/lib/generators/banks"
+} from "@/components/ui/combobox";
+import { BANKS, type Bank } from "@/lib/generators/banks";
 import {
   generateBankAccount,
   randomBank,
   type BankAccount,
-} from "@/lib/generators/bank-account"
+} from "@/lib/generators/bank-account";
 
 async function copyText(text: string, description: string) {
   try {
-    await navigator.clipboard.writeText(text)
-    toast.success("Copiado!", { description })
+    await navigator.clipboard.writeText(text);
+    toast.success("Copiado!", { description });
   } catch {
-    toast.error("Não foi possível copiar.")
+    toast.error("Não foi possível copiar.");
   }
 }
 
@@ -34,12 +34,12 @@ function CopyRow({
   value,
   grow = false,
 }: {
-  label: string
-  value: string
-  grow?: boolean
+  label: string;
+  value: string;
+  grow?: boolean;
 }) {
   return (
-    <div className={`${grow ? "flex-1" : "flex-none"} p-4`}>
+    <div className={`${grow ? "flex-2" : "flex-1"} min-w-0 p-4`}>
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 flex items-center justify-between gap-2">
         <span className="font-mono text-lg tabular-nums break-all">
@@ -56,16 +56,16 @@ function CopyRow({
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 export function BankAccountPanel() {
   const [account, setAccount] = useState<BankAccount>(() =>
     generateBankAccount(randomBank()),
-  )
+  );
 
   function handleGenerate() {
-    setAccount((prev) => generateBankAccount(prev.bank))
+    setAccount((prev) => generateBankAccount(prev.bank));
   }
 
   function handleCopyAll() {
@@ -74,15 +74,15 @@ export function BankAccountPanel() {
       `Agência: ${account.agencia}`,
       `Conta corrente: ${account.conta}`,
       `Dígito verificador: ${account.digito}`,
-    ].join("\n")
-    copyText(text, account.bank.name)
+    ].join("\n");
+    copyText(text, account.bank.name);
   }
 
   return (
     <Card>
       <CardContent className="flex flex-col">
-        {/* Banco: único campo com select */}
-        <div className="space-y-2">
+        <div className="space-y-3">
+          {/* Banco: único campo com select */}
           <Label>Banco</Label>
           <Combobox
             items={BANKS}
@@ -94,7 +94,7 @@ export function BankAccountPanel() {
           >
             <ComboboxInput
               placeholder="Buscar por nome ou código..."
-              className="min-h-11"
+              className="min-h-12"
             />
             <ComboboxContent>
               <ComboboxEmpty>Nenhum banco encontrado.</ComboboxEmpty>
@@ -110,7 +110,7 @@ export function BankAccountPanel() {
         </div>
 
         {/* Dados gerados (agência / conta / dígito) */}
-        <div className="mt-6 flex flex-col divide-y rounded-xl border bg-muted sm:flex-row sm:divide-x sm:divide-y-0">
+        <div className="flex flex-col divide-y rounded-xl glass-subtle sm:flex-row sm:divide-x sm:divide-y-0">
           <CopyRow label="Agência" value={account.agencia} />
           <CopyRow label="Conta corrente" value={account.conta} grow />
           <CopyRow label="Dígito" value={account.digito} />
@@ -134,5 +134,5 @@ export function BankAccountPanel() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

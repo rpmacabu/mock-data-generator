@@ -69,30 +69,32 @@ export function GeneratorPanel({ generate, format }: GeneratorPanelProps) {
   return (
     <Card>
       <CardContent className="flex flex-col">
-        {/* Número + ações */}
-        <div className="space-y-6 rounded-lg border bg-muted">
-          <output className="block break-all select-all text-center font-mono text-2xl font-medium tracking-wider tabular-nums sm:text-3xl p-6 pb-0">
+        {/* Número gerado */}
+        <div className="rounded-lg glass-subtle">
+          <output className="block break-all select-all p-6 text-center font-mono text-2xl font-medium tracking-wider tabular-nums sm:text-3xl">
             {display}
           </output>
-          <div className="flex gap-3 p-3 pt-0">
-            <Button
-              size="lg"
-              variant="secondary"
-              className="flex-1"
-              onClick={handleGenerate}
-            >
-              <RefreshCw />
-              Gerar novamente
-            </Button>
-            <Button size="lg" className="flex-1" onClick={handleCopy}>
-              <Copy />
-              Copiar
-            </Button>
-          </div>
         </div>
 
-        {/* Formatado: logo abaixo do box, próximo dele */}
-        <div className="mt-3 flex items-center gap-3">
+        {/* Ações (fora do box, como no painel de Conta) */}
+        <div className="mt-4 flex gap-3">
+          <Button
+            size="lg"
+            variant="secondary"
+            className="flex-1"
+            onClick={handleGenerate}
+          >
+            <RefreshCw />
+            Gerar novamente
+          </Button>
+          <Button size="lg" className="flex-1" onClick={handleCopy}>
+            <Copy />
+            Copiar
+          </Button>
+        </div>
+
+        {/* Formatado */}
+        <div className="mt-6 flex items-center gap-3">
           <Switch
             id={switchId}
             checked={formatted}

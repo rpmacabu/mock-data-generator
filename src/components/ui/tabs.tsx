@@ -22,11 +22,11 @@ function Tabs({
 }
 
 const tabsListVariants = cva(
-  "group/tabs-list inline-flex w-fit items-center justify-center rounded-xl text-muted-foreground group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
+  "group/tabs-list relative inline-flex w-fit items-center justify-center rounded-xl text-muted-foreground group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
   {
     variants: {
       variant: {
-        default: "bg-muted",
+        default: "glass-subtle",
         line: "gap-1 bg-transparent",
       },
       size: {
@@ -75,6 +75,29 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
   )
 }
 
+/**
+ * Pílula deslizante que segue a tab ativa. O Base UI publica a posição/tamanho
+ * da tab ativa nas CSS vars --active-tab-{left,top,width,height} (em px); aqui
+ * elas viram `translate` + `width`/`height` com transição, criando o efeito de
+ * a seleção "andar" ao trocar de tab. Deve ser o primeiro filho de <TabsList>
+ * para ficar atrás dos rótulos (que são position:relative).
+ */
+function TabsIndicator({ className, ...props }: TabsPrimitive.Indicator.Props) {
+  return (
+    <TabsPrimitive.Indicator
+      data-slot="tabs-indicator"
+      className={cn(
+        "pointer-events-none absolute top-0 left-0 z-0 rounded-lg bg-white shadow-sm",
+        "h-[var(--active-tab-height)] w-[var(--active-tab-width)]",
+        "[translate:var(--active-tab-left)_var(--active-tab-top)]",
+        "transition-[translate,width,height] duration-300 ease-out motion-reduce:transition-none",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   return (
     <TabsPrimitive.Panel
@@ -85,4 +108,11 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   )
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants }
+export {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsIndicator,
+  TabsContent,
+  tabsListVariants,
+}
