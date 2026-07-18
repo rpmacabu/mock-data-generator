@@ -48,25 +48,28 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Escala de cinza: Mauve (Radix Colors) — cinza levemente puxado para o roxo,
+   que combina com o índigo do --primary. Os degraus estão anotados como
+   mauve1..mauve12 para facilitar trocar de passo. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --background: #fdfcfd; /* mauve1 */
+  --foreground: #211f26; /* mauve12 */
+  --card: #fdfcfd; /* mauve1 */
+  --card-foreground: #211f26;
+  --popover: #fdfcfd;
+  --popover-foreground: #211f26;
   --primary: oklch(0.511 0.262 276.966); /* indigo-600 */
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --secondary: #eae7ec; /* mauve4 — fundo dos botões secundários */
+  --secondary-foreground: #211f26;
+  --muted: #f2eff3; /* mauve3 — hover */
+  --muted-foreground: #65636d; /* mauve11 */
+  --accent: #f2eff3; /* mauve3 */
+  --accent-foreground: #211f26;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: #dbd8e0; /* mauve6 */
+  --input: #d0cdd7; /* mauve7 */
+  --ring: #bcbac7; /* mauve8 */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -81,27 +84,44 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Fundo da página e camadas de vidro — valores do tema claro.
+     O tema escuro sobrescreve tudo isso em `.dark`. */
+  --app-gradient-tint: oklch(0.72 0.11 277 / 0.28);
+  --app-gradient-from: oklch(0.98 0.005 277);
+  --app-gradient-to: oklch(0.94 0.004 277);
+  /* No claro o card é sólido: sem translucidez nem blur. O efeito de vidro
+     fica só no escuro, onde ele realmente aparece. O ring e a sombra ficam,
+     pois são o que define a borda do card. */
+  --glass-bg: var(--card);
+  --glass-blur: none;
+  --glass-hairline: oklch(0 0 0 / 0.1);
+  --glass-highlight: transparent;
+  --glass-shadow: oklch(0.3 0.05 277 / 0.16);
+  --glass-subtle-bg: oklch(0 0 0 / 0.03);
+  --glass-subtle-hairline: oklch(0 0 0 / 0.07);
 }
 
+/* Mauve dark — mesma escala, degraus do tema escuro. */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  --background: #121113; /* mauve1 */
+  --foreground: #eeeef0; /* mauve12 */
+  --card: #2b292d; /* mauve4 */
+  --card-foreground: #eeeef0;
+  --popover: #2b292d;
+  --popover-foreground: #eeeef0;
   --primary: oklch(0.585 0.233 277.117); /* indigo-500 */
   --primary-foreground: oklch(0.985 0 0); /* branco p/ contraste */
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --secondary: #3c393f; /* mauve6 */
+  --secondary-foreground: #eeeef0;
+  --muted: #323035; /* mauve5 — hover */
+  --muted-foreground: #b5b2bc; /* mauve11 */
+  --accent: #323035; /* mauve5 */
+  --accent-foreground: #eeeef0;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: #3c393f; /* mauve6 */
+  --input: #49474e; /* mauve7 */
+  --ring: #625f69; /* mauve8 */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -115,6 +135,17 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --app-gradient-tint: oklch(0.32 0.07 277 / 0.5);
+  --app-gradient-from: oklch(0.17 0.01 277);
+  --app-gradient-to: oklch(0.09 0 0);
+  --glass-bg: color-mix(in oklab, var(--card) 60%, transparent);
+  --glass-blur: blur(24px) saturate(170%);
+  --glass-hairline: oklch(1 0 0 / 0.1);
+  --glass-highlight: oklch(1 0 0 / 0.16);
+  --glass-shadow: oklch(0 0 0 / 0.55);
+  --glass-subtle-bg: oklch(1 0 0 / 0.05);
+  --glass-subtle-hairline: oklch(1 0 0 / 0.08);
 }
 
 @layer base {
@@ -126,6 +157,9 @@
   }
   html {
     @apply font-sans;
+    color-scheme: light;
+  }
+  html.dark {
     color-scheme: dark;
   }
   /* Tailwind v4 usa cursor:default em botões; volta o pointer (opção --pointer do shadcn). */
@@ -133,45 +167,62 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  /* Suaviza a troca de tema: sem isso, só os elementos que já têm
+     `transition-*` acompanham a mudança e o resto muda de cor num corte seco.
+     Como esta regra vive em `base`, qualquer `transition-*` de componente (que
+     vive em `utilities`) continua tendo prioridade. */
+  *,
+  *::before,
+  *::after {
+    transition-property: color, background-color, border-color,
+      text-decoration-color, fill, stroke, box-shadow;
+    transition-duration: 400ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms;
+    }
+  }
 }
 
 /* Efeito "frosted glass" (estilo Apple). Depende de haver algo (as manchas de
    cor do fundo em App.tsx) atrás do elemento para o desfoque ficar visível.
    `glass` = painel principal; `glass-subtle` = boxes internos e barra de tabs. */
 @utility glass {
-  background-color: color-mix(in oklab, var(--card) 60%, transparent);
-  -webkit-backdrop-filter: blur(24px) saturate(170%);
-  backdrop-filter: blur(24px) saturate(170%);
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  /* O hairline é um ring (shadow externo, sem `inset`) em vez de borda: assim
+     ele fica na mesma camada da sombra de baixo e os dois se fundem na aresta,
+     em vez de a borda desenhar uma linha dura por dentro do card. O brilho do
+     topo continua inset — é o reflexo especular do vidro. */
   box-shadow:
-    inset 0 0 0 1px oklch(1 0 0 / 0.1),
-    /* hairline */ inset 0 1px 0 0 oklch(1 0 0 / 0.16),
-    /* brilho no topo */ 0 12px 40px -12px oklch(0 0 0 / 0.55); /* sombra */
+    0 0 0 1px var(--glass-hairline),
+    /* ring */ inset 0 1px 0 0 var(--glass-highlight),
+    /* brilho no topo */ 0 12px 40px -12px var(--glass-shadow); /* sombra */
 }
 
 @utility glass-subtle {
-  background-color: oklch(1 0 0 / 0.05);
+  background-color: var(--glass-subtle-bg);
   -webkit-backdrop-filter: blur(10px) saturate(150%);
   backdrop-filter: blur(10px) saturate(150%);
-  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.08);
+  box-shadow: inset 0 0 0 1px var(--glass-subtle-hairline);
 }
 
-/* Padrão de linhas diagonais bem sutil para o fundo. Serve de textura atrás do
-   vidro: nítido nas bordas, desfocado pelo backdrop-blur sob os painéis.
-   A máscara radial faz o padrão desvanecer suavemente nas extremidades. */
-@utility bg-diagonal-lines {
-  background-image: repeating-linear-gradient(
-    45deg,
-    oklch(1 0 0 / 0.1) 0,
-    oklch(1 0 0 / 0.1) 1px,
-    transparent 1px,
-    transparent 12px
-  );
-  -webkit-mask-image: radial-gradient(
-    ellipse at center,
-    black 55%,
-    transparent 100%
-  );
-  mask-image: radial-gradient(ellipse at center, black 55%, transparent 100%);
+/* Fundo: gradiente com leve tom índigo no topo esmaecendo para baixo. Serve de
+   base para o efeito de vidro dos painéis. As cores vêm de variáveis para que
+   o tema claro e o escuro usem o mesmo desenho com paletas diferentes. */
+@utility bg-app-gradient {
+  background-image:
+    radial-gradient(ellipse at top, var(--app-gradient-tint), transparent 60%),
+    linear-gradient(
+      180deg,
+      var(--app-gradient-from) 0%,
+      var(--app-gradient-to) 100%
+    );
 }
 
 /* Respeita quem prefere menos transparência (acessibilidade): cai para opaco. */

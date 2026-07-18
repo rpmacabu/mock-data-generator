@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { BankAccountPanel } from "@/components/bank-account-panel";
 import { GeneratorPanel } from "@/components/generator-panel";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Tabs,
   TabsContent,
@@ -43,30 +44,30 @@ function AnimatedHeight({ children }: { children: ReactNode }) {
     return () => observer.disconnect();
   }, []);
 
+  // O `overflow-hidden` (necessário para animar a altura) recorta exatamente na
+  // borda do card e cortaria a sombra dele, que sangra ~8px nas laterais e
+  // ~20px embaixo, e o ring de 1px, que sangra também para cima. O padding no
+  // filho medido afasta essa borda de recorte e a margem negativa no pai
+  // cancela o espaço extra, mantendo o layout igual.
   return (
     <div
-      className="overflow-hidden transition-[height] duration-300 ease-out motion-reduce:transition-none"
+      className="-m-8 overflow-hidden transition-[height] duration-300 ease-out motion-reduce:transition-none"
       style={{ height }}
     >
-      <div ref={innerRef}>{children}</div>
+      <div ref={innerRef} className="p-8">
+        {children}
+      </div>
     </div>
   );
 }
 
 function App() {
   return (
-    <main className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-background p-6">
-      {/* Fundo: padrão de linhas diagonais bem sutil. Dá textura para o efeito
-          de vidro (o backdrop-blur dos painéis desfoca as linhas por trás).
-          Puramente decorativo. */}
-      <div
-        aria-hidden
-        className="bg-diagonal-lines pointer-events-none absolute inset-0 z-0"
-      />
-
+    <main className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-app-gradient p-6">
       <div className="relative z-10 w-full max-w-lg space-y-6">
-        <header className="space-y-1 text-center">
+        <header className="flex items-center justify-between gap-4">
           <h1 className="text-3xl font-medium">Mock Data Generator</h1>
+          <ThemeToggle />
         </header>
 
         <Tabs defaultValue="cpf" className="w-full gap-4">
@@ -122,7 +123,7 @@ function App() {
         </footer>
       </div>
 
-      <Toaster theme="dark" position="bottom-center" richColors />
+      <Toaster position="bottom-center" richColors />
     </main>
   );
 }

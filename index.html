@@ -5,6 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mock Data Generator</title>
+    <script>
+      // Aplica o tema salvo antes da primeira pintura, senão quem escolheu o
+      // tema claro veria um flash escuro (o padrão) até o React montar.
+      try {
+        if (localStorage.getItem("theme") === "light") {
+          document.documentElement.classList.remove("dark");
+        }
+      } catch {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
