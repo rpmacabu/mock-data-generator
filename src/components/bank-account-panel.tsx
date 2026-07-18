@@ -65,7 +65,8 @@ export function BankAccountPanel() {
   );
 
   function handleGenerate() {
-    setAccount((prev) => generateBankAccount(prev.bank));
+    // Sorteia também o banco (não reaproveita o atual).
+    setAccount(generateBankAccount(randomBank()));
   }
 
   function handleCopyAll() {
@@ -110,7 +111,9 @@ export function BankAccountPanel() {
         </div>
 
         {/* Dados gerados (agência / conta / dígito) */}
-        <div className="flex flex-col divide-y rounded-xl glass-subtle sm:flex-row sm:divide-x sm:divide-y-0">
+        {/* Os divisores usam o mesmo hairline da borda do box que os envolve
+            (glass-subtle), em vez do --border, para não destoarem. */}
+        <div className="flex flex-col divide-y divide-[var(--glass-subtle-hairline)] rounded-xl glass-subtle sm:flex-row sm:divide-x sm:divide-y-0">
           <CopyRow label="Agência" value={account.agencia} />
           <CopyRow label="Conta corrente" value={account.conta} grow />
           <CopyRow label="Dígito" value={account.digito} />
