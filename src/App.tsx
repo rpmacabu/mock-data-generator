@@ -20,11 +20,10 @@ import type { ParityOptions } from "@/lib/generators/parity";
 // instantâneo, sem o deslize) e só pintamos o texto de escuro para contrastar
 // com a pílula. data-active:hover mantém a fonte escura no hover.
 const activeTabClass =
-  "data-active:bg-transparent dark:data-active:bg-transparent dark:data-active:border-transparent data-active:text-neutral-900 data-active:hover:text-neutral-900 dark:data-active:text-neutral-900 dark:data-active:hover:text-neutral-900 group-data-[variant=default]/tabs-list:data-active:shadow-none";
+  "font-normal data-active:font-semibold data-active:bg-transparent dark:data-active:bg-transparent dark:data-active:border-transparent data-active:text-neutral-900 data-active:hover:text-neutral-900 dark:data-active:text-neutral-900 dark:data-active:hover:text-neutral-900 group-data-[variant=default]/tabs-list:data-active:shadow-none";
 
-// Fade-in aplicado ao painel que entra (o Base UI remonta o painel a cada troca).
-const panelAnim =
-  "animate-in fade-in-0 duration-200 motion-reduce:animate-none";
+// Ordem das tabs, para saber a direção do deslize ao trocar.
+const TAB_ORDER = ["cpf", "cnpj", "conta"];
 
 /**
  * Anima a altura do conteúdo ao trocar de tab (os painéis têm alturas
@@ -62,15 +61,39 @@ function AnimatedHeight({ children }: { children: ReactNode }) {
 }
 
 function App() {
+  const [tab, setTab] = useState("cpf");
+  const [direction, setDirection] = useState<"left" | "right">("right");
+
+  function handleTabChange(next: string) {
+    setDirection(
+      TAB_ORDER.indexOf(next) > TAB_ORDER.indexOf(tab) ? "right" : "left",
+    );
+    setTab(next);
+  }
+
+  // O painel que entra desliza do mesmo lado para onde a pílula das tabs vai
+  // (o Base UI remonta o painel a cada troca, então o animate-in replay a
+  // animação), com a mesma duração/curva do <TabsIndicator /> para os dois
+  // movimentos lerem como um só.
+  const panelAnim = `animate-in fade-in-0 duration-300 ease-out motion-reduce:animate-none ${
+    direction === "right" ? "slide-in-from-right-6" : "slide-in-from-left-6"
+  }`;
+
   return (
-    <main className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-app-gradient p-6">
+    <main className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-app-gradient p-4 lg:p-0">
       <div className="relative z-10 w-full max-w-lg space-y-6">
         <header className="flex items-center justify-between gap-4">
-          <h1 className="text-3xl font-medium">Mock Data Generator</h1>
+          <h1 className="text-2xl md:text-3xl font-medium">
+            Gerador de dados teste
+          </h1>
           <ThemeToggle />
         </header>
 
-        <Tabs defaultValue="cpf" className="w-full gap-4">
+        <Tabs
+          value={tab}
+          onValueChange={(value) => handleTabChange(value as string)}
+          className="w-full gap-4"
+        >
           <TabsList size="lg" className="grid w-full grid-cols-3">
             <TabsIndicator />
             <TabsTrigger value="cpf" className={activeTabClass}>
@@ -123,7 +146,9 @@ function App() {
         </footer>
       </div>
 
-      <Toaster position="bottom-center" richColors />
+      {/* Sem richColors: toasts com o fundo neutro do tema (--popover); o tipo
+          (sucesso/erro) fica indicado só pelo ícone. */}
+      <Toaster position="bottom-center" />
     </main>
   );
 }

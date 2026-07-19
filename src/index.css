@@ -1,13 +1,32 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import "@fontsource-variable/google-sans";
 
 @custom-variant dark (&:is(.dark *));
 
+/* Escala `zinc` do Tailwind v4 (valores de tailwindcss/theme.css), redeclarada
+   com `static` porque o Tailwind só emite variáveis de tema usadas por alguma
+   classe utilitária — como aqui elas são consumidas só por outras variáveis
+   (--background, --border...), sem isso o tree-shaking as removeria e
+   var(--color-zinc-*) resolveria para vazio. */
+@theme static {
+  --color-zinc-50: oklch(98.5% 0 0);
+  --color-zinc-100: oklch(96.7% 0.001 286.375);
+  --color-zinc-200: oklch(92% 0.004 286.32);
+  --color-zinc-300: oklch(87.1% 0.006 286.286);
+  --color-zinc-400: oklch(70.5% 0.015 286.067);
+  --color-zinc-500: oklch(55.2% 0.016 285.938);
+  --color-zinc-600: oklch(44.2% 0.017 285.786);
+  --color-zinc-700: oklch(37% 0.013 285.805);
+  --color-zinc-800: oklch(27.4% 0.006 286.033);
+  --color-zinc-900: oklch(21% 0.006 285.885);
+  --color-zinc-950: oklch(14.1% 0.005 285.823);
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: "Geist Variable", sans-serif;
+  --font-sans: "Google Sans Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,28 +67,27 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Escala de cinza: Mauve (Radix Colors) — cinza levemente puxado para o roxo,
-   que combina com o índigo do --primary. Os degraus estão anotados como
-   mauve1..mauve12 para facilitar trocar de passo. */
+/* Escala de cinza: `zinc` do Tailwind (v4). Referenciamos as variáveis
+   --color-zinc-* que o próprio Tailwind publica, em vez de copiar valores. */
 :root {
-  --background: #fdfcfd; /* mauve1 */
-  --foreground: #211f26; /* mauve12 */
-  --card: #fdfcfd; /* mauve1 */
-  --card-foreground: #211f26;
-  --popover: #fdfcfd;
-  --popover-foreground: #211f26;
+  --background: var(--color-zinc-50);
+  --foreground: var(--color-zinc-950);
+  --card: var(--color-zinc-50);
+  --card-foreground: var(--color-zinc-950);
+  --popover: var(--color-zinc-50);
+  --popover-foreground: var(--color-zinc-950);
   --primary: oklch(0.511 0.262 276.966); /* indigo-600 */
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: #eae7ec; /* mauve4 — fundo dos botões secundários */
-  --secondary-foreground: #211f26;
-  --muted: #f2eff3; /* mauve3 — hover */
-  --muted-foreground: #65636d; /* mauve11 */
-  --accent: #f2eff3; /* mauve3 */
-  --accent-foreground: #211f26;
+  --secondary: var(--color-zinc-200); /* fundo dos botões secundários */
+  --secondary-foreground: var(--color-zinc-950);
+  --muted: var(--color-zinc-100); /* hover */
+  --muted-foreground: var(--color-zinc-600);
+  --accent: var(--color-zinc-100);
+  --accent-foreground: var(--color-zinc-950);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #dbd8e0; /* mauve6 */
-  --input: #d0cdd7; /* mauve7 */
-  --ring: #bcbac7; /* mauve8 */
+  --border: var(--color-zinc-300);
+  --input: var(--color-zinc-300);
+  --ring: var(--color-zinc-400);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -90,38 +108,39 @@
   --app-gradient-tint: oklch(0.72 0.11 277 / 0.28);
   --app-gradient-from: oklch(0.98 0.005 277);
   --app-gradient-to: oklch(0.94 0.004 277);
-  /* No claro o card é sólido: sem translucidez nem blur. O efeito de vidro
-     fica só no escuro, onde ele realmente aparece. O ring e a sombra ficam,
-     pois são o que define a borda do card. */
+  /* No claro o card é sólido e as bordas são opacas: luz especular branca não
+     aparece sobre fundo claro, então os dois stops do gradiente da moldura são
+     a mesma cor (--border) — vira uma borda sólida comum. */
   --glass-bg: var(--card);
-  --glass-blur: none;
-  --glass-hairline: oklch(0 0 0 / 0.1);
-  --glass-highlight: transparent;
+  --glass-edge-top: var(--border);
+  --glass-edge-bottom: var(--border);
   --glass-shadow: oklch(0.3 0.05 277 / 0.16);
   --glass-subtle-bg: oklch(0 0 0 / 0.03);
-  --glass-subtle-hairline: oklch(0 0 0 / 0.07);
+  --glass-subtle-edge-top: var(--border);
+  --glass-subtle-edge-bottom: var(--border);
+  --glass-subtle-hairline: var(--border); /* divisores (dados bancários) */
 }
 
-/* Mauve dark — mesma escala, degraus do tema escuro. */
+/* Mesma escala zinc, degraus invertidos para o tema escuro. */
 .dark {
-  --background: #121113; /* mauve1 */
-  --foreground: #eeeef0; /* mauve12 */
-  --card: #2b292d; /* mauve4 */
-  --card-foreground: #eeeef0;
-  --popover: #2b292d;
-  --popover-foreground: #eeeef0;
+  --background: var(--color-zinc-950);
+  --foreground: var(--color-zinc-100);
+  --card: var(--color-zinc-900);
+  --card-foreground: var(--color-zinc-100);
+  --popover: var(--color-zinc-900);
+  --popover-foreground: var(--color-zinc-100);
   --primary: oklch(0.585 0.233 277.117); /* indigo-500 */
   --primary-foreground: oklch(0.985 0 0); /* branco p/ contraste */
-  --secondary: #3c393f; /* mauve6 */
-  --secondary-foreground: #eeeef0;
-  --muted: #323035; /* mauve5 — hover */
-  --muted-foreground: #b5b2bc; /* mauve11 */
-  --accent: #323035; /* mauve5 */
-  --accent-foreground: #eeeef0;
+  --secondary: var(--color-zinc-800);
+  --secondary-foreground: var(--color-zinc-100);
+  --muted: var(--color-zinc-800); /* hover */
+  --muted-foreground: var(--color-zinc-400);
+  --accent: var(--color-zinc-800);
+  --accent-foreground: var(--color-zinc-100);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: #3c393f; /* mauve6 */
-  --input: #49474e; /* mauve7 */
-  --ring: #625f69; /* mauve8 */
+  --border: var(--color-zinc-800);
+  --input: var(--color-zinc-700);
+  --ring: var(--color-zinc-600);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -140,12 +159,19 @@
   --app-gradient-from: oklch(0.17 0.01 277);
   --app-gradient-to: oklch(0.09 0 0);
   --glass-bg: color-mix(in oklab, var(--card) 60%, transparent);
-  --glass-blur: blur(24px) saturate(170%);
-  --glass-hairline: oklch(1 0 0 / 0.1);
-  --glass-highlight: oklch(1 0 0 / 0.16);
+  /* Luz especular direcional: a moldura em gradiente acende a aresta superior
+     e esmaece ao longo das laterais até quase sumir na base, como um reflexo
+     de luz vindo de cima. O card (edge) brilha mais que os boxes internos
+     (subtle-edge), que recebem menos "luz". */
+  --glass-edge-top: oklch(1 0 0 / 0.22);
+  --glass-edge-bottom: oklch(1 0 0 / 0.04);
   --glass-shadow: oklch(0 0 0 / 0.55);
   --glass-subtle-bg: oklch(1 0 0 / 0.05);
-  --glass-subtle-hairline: oklch(1 0 0 / 0.08);
+  --glass-subtle-edge-top: oklch(1 0 0 / 0.14);
+  --glass-subtle-edge-bottom: oklch(1 0 0 / 0.03);
+  --glass-subtle-hairline: oklch(
+    1 0 0 / 0.08
+  ); /* divisores (dados bancários) */
 }
 
 @layer base {
@@ -167,49 +193,86 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
-  /* Suaviza a troca de tema: sem isso, só os elementos que já têm
-     `transition-*` acompanham a mudança e o resto muda de cor num corte seco.
-     Como esta regra vive em `base`, qualquer `transition-*` de componente (que
-     vive em `utilities`) continua tendo prioridade. */
-  *,
-  *::before,
-  *::after {
-    transition-property: color, background-color, border-color,
-      text-decoration-color, fill, stroke, box-shadow;
-    transition-duration: 400ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      transition-duration: 0.01ms;
-    }
+}
+
+/* Cross-fade da troca de tema (View Transitions API, disparada no
+   theme-toggle). O navegador mistura snapshots da tela inteira, então não há
+   dessincronia entre elementos. Quem prefere menos movimento pula o fade. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
   }
 }
 
-/* Efeito "frosted glass" (estilo Apple). Depende de haver algo (as manchas de
-   cor do fundo em App.tsx) atrás do elemento para o desfoque ficar visível.
+/* Painéis estilo vidro, SEM backdrop-blur: o fundo é um gradiente liso, então
+   desfocá-lo não muda nada visualmente — só custa GPU. Se o fundo um dia
+   ganhar textura, é aqui que o blur voltaria.
+
+   A borda é um pseudo-elemento de 1px preenchido por um gradiente vertical e
+   recortado em moldura pela máscara (content-box XOR tudo). É isso que dá a
+   luz especular direcional no escuro: aresta de cima acesa, laterais
+   esmaecendo, base quase apagada — um box-shadow de cor única não faz isso.
+   No claro os dois stops do gradiente são a mesma cor (--border) e a moldura
+   vira uma borda sólida comum.
    `glass` = painel principal; `glass-subtle` = boxes internos e barra de tabs. */
 @utility glass {
+  position: relative;
   background-color: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  /* O hairline é um ring (shadow externo, sem `inset`) em vez de borda: assim
-     ele fica na mesma camada da sombra de baixo e os dois se fundem na aresta,
-     em vez de a borda desenhar uma linha dura por dentro do card. O brilho do
-     topo continua inset — é o reflexo especular do vidro. */
-  box-shadow:
-    0 0 0 1px var(--glass-hairline),
-    /* ring */ inset 0 1px 0 0 var(--glass-highlight),
-    /* brilho no topo */ 0 12px 40px -12px var(--glass-shadow); /* sombra */
+  box-shadow: 0 12px 40px -12px var(--glass-shadow);
+  &::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      to bottom,
+      var(--glass-edge-top),
+      var(--glass-edge-bottom)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
 }
 
 @utility glass-subtle {
+  position: relative;
   background-color: var(--glass-subtle-bg);
-  -webkit-backdrop-filter: blur(10px) saturate(150%);
-  backdrop-filter: blur(10px) saturate(150%);
-  box-shadow: inset 0 0 0 1px var(--glass-subtle-hairline);
+  &::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      to bottom,
+      var(--glass-subtle-edge-top),
+      var(--glass-subtle-edge-bottom)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
 }
 
 /* Fundo: gradiente com leve tom índigo no topo esmaecendo para baixo. Serve de
@@ -229,12 +292,8 @@
 @media (prefers-reduced-transparency: reduce) {
   .glass {
     background-color: var(--card);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
   .glass-subtle {
     background-color: var(--muted);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
 }
