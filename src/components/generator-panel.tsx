@@ -60,7 +60,7 @@ export function GeneratorPanel({ generate, format }: GeneratorPanelProps) {
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(display);
-      toast.success("Copiado!", { description: display });
+      toast.success("Copiado");
     } catch {
       toast.error("Não foi possível copiar automaticamente.");
     }
@@ -68,48 +68,48 @@ export function GeneratorPanel({ generate, format }: GeneratorPanelProps) {
 
   return (
     <Card>
-      <CardContent className="flex flex-col">
+      <CardContent className="flex flex-col gap-4">
         {/* Número gerado, com o toggle "Formatado" dentro do mesmo box */}
-        <div className="rounded-lg glass-subtle px-6 pt-6 pb-5">
+        <div className="rounded-lg bg-muted border border-black/10 px-3 dark:border-white/10 py-6 space-y-3">
           <output className="block break-all select-all text-center font-mono text-2xl font-medium tracking-wider tabular-nums sm:text-3xl">
             {display}
           </output>
 
-          <div className="mt-3 flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-2">
             <Switch
               id={switchId}
-              size="sm"
+              size="xs"
               checked={formatted}
               onCheckedChange={setFormatted}
             />
             <Label
               htmlFor={switchId}
-              className="text-base font-medium text-muted-foreground"
+              className="text-sm font-medium text-muted-foreground"
             >
               Formatado
             </Label>
           </div>
         </div>
 
-        {/* Ações (fora do box, como no painel de Conta) */}
-        <div className="mt-4 flex gap-3">
+        {/* Ações: empilhadas no mobile, lado a lado a partir de sm */}
+        <div className="flex flex-col gap-3 sm:flex-row">
           <Button
             size="lg"
             variant="secondary"
-            className="flex-1"
+            className="sm:flex-1"
             onClick={handleGenerate}
           >
             <RefreshCw />
             Gerar novamente
           </Button>
-          <Button size="lg" className="flex-1" onClick={handleCopy}>
+          <Button size="lg" className="sm:flex-1" onClick={handleCopy}>
             <Copy />
             Copiar
           </Button>
         </div>
 
         {/* Paridade (início × final) em linha */}
-        <div className="mt-6 space-y-3">
+        <div className="space-y-2">
           <span className="block text-sm text-muted-foreground">
             Início / Final
           </span>

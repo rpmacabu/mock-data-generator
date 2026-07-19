@@ -1,29 +1,21 @@
-import { useState } from "react";
-import { Copy, RefreshCw } from "lucide-react";
+import { useId, useState } from "react";
+import { ChevronDown, Copy, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
-import { BANKS, type Bank } from "@/lib/generators/banks";
+import { BANKS } from "@/lib/generators/banks";
 import {
   generateBankAccount,
   randomBank,
   type BankAccount,
 } from "@/lib/generators/bank-account";
 
-async function copyText(text: string, description: string) {
+async function copyText(text: string) {
   try {
     await navigator.clipboard.writeText(text);
-    toast.success("Copiado!", { description });
+    toast.success("Copiado");
   } catch {
     toast.error("Não foi possível copiar.");
   }
@@ -39,17 +31,17 @@ function CopyRow({
   grow?: boolean;
 }) {
   return (
-    <div className={`${grow ? "flex-2" : "flex-1"} min-w-0 p-4`}>
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="mt-1 flex items-center justify-between gap-2">
+    <div className={`${grow ? "flex-2" : "flex-1"} space-y-1 min-w-0 p-3`}>
+      <div className="text-sm text-muted-foreground">{label}</div>
+      <div className="flex items-center justify-between gap-2">
         <span className="font-mono text-lg tabular-nums break-all">
           {value}
         </span>
         <Button
           variant="ghost"
           size="icon"
-          className="size-7 shrink-0"
-          onClick={() => copyText(value, `${label}: ${value}`)}
+          className="size-8 shrink-0 hover:text-primary"
+          onClick={() => copyText(value)}
           aria-label={`Copiar ${label}`}
         >
           <Copy />
@@ -60,6 +52,7 @@ function CopyRow({
 }
 
 export function BankAccountPanel() {
+  const selectId = useId();
   const [account, setAccount] = useState<BankAccount>(() =>
     generateBankAccount(randomBank()),
   );
@@ -76,61 +69,64 @@ export function BankAccountPanel() {
       `Conta corrente: ${account.conta}`,
       `Dígito verificador: ${account.digito}`,
     ].join("\n");
-    copyText(text, account.bank.name);
+    copyText(text);
   }
 
   return (
     <Card>
-      <CardContent className="flex flex-col">
-        <div className="space-y-3">
-          {/* Banco: único campo com select */}
-          <Label>Banco</Label>
-          <Combobox
-            items={BANKS}
-            value={account.bank}
-            onValueChange={(bank) =>
-              bank && setAccount((prev) => ({ ...prev, bank }))
-            }
-            itemToStringLabel={(bank: Bank) => `${bank.code} - ${bank.name}`}
-          >
-            <ComboboxInput
-              placeholder="Buscar por nome ou código..."
-              className="min-h-12"
+      <CardContent className="flex flex-col gap-4 py-2">
+        <div className="space-y-2">
+          {/* Banco: <select> nativo — no celular abre o picker do sistema
+              (roleta/sheet), muito melhor que popup customizado para uma lista
+              de ~470 itens; no desktop, digitar o código pula para o banco
+              (type-ahead nativo casa com o prefixo do label). Estilo copiado
+              do ui/input.tsx para ficar idêntico aos demais campos. */}
+          <Label htmlFor={selectId}>Banco</Label>
+          <div className="relative">
+            <select
+              id={selectId}
+              value={account.bank.code}
+              onChange={(e) => {
+                const bank = BANKS.find((b) => b.code === e.target.value);
+                if (bank) setAccount((prev) => ({ ...prev, bank }));
+              }}
+              className="h-12 w-full appearance-none truncate rounded-lg border border-input bg-transparent pr-9 pl-2.5 text-base transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30"
+            >
+              {BANKS.map((bank) => (
+                <option key={bank.code} value={bank.code}>
+                  {bank.code} - {bank.name}
+                </option>
+              ))}
+            </select>
+            {/* appearance-none remove a seta nativa; esta repõe no estilo do app */}
+            <ChevronDown
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground"
             />
-            <ComboboxContent>
-              <ComboboxEmpty>Nenhum banco encontrado.</ComboboxEmpty>
-              <ComboboxList>
-                {(bank: Bank) => (
-                  <ComboboxItem key={bank.code} value={bank}>
-                    {bank.code} - {bank.name}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
+          </div>
         </div>
 
         {/* Dados gerados (agência / conta / dígito) */}
         {/* Os divisores usam o mesmo hairline da borda do box que os envolve
             (glass-subtle), em vez do --border, para não destoarem. */}
-        <div className="flex flex-col divide-y divide-[var(--glass-subtle-hairline)] rounded-xl glass-subtle sm:flex-row sm:divide-x sm:divide-y-0">
+        <div className="flex flex-col divide-y divide-(--glass-subtle-hairline) rounded-xl glass-subtle sm:flex-row sm:divide-x sm:divide-y-0">
           <CopyRow label="Agência" value={account.agencia} />
           <CopyRow label="Conta corrente" value={account.conta} grow />
           <CopyRow label="Dígito" value={account.digito} />
         </div>
 
-        {/* Ações */}
-        <div className="mt-4 flex gap-3">
+        {/* Ações: empilhadas no mobile, lado a lado a partir de sm */}
+        <div className="flex flex-col gap-3 sm:flex-row">
           <Button
             size="lg"
             variant="secondary"
-            className="flex-1"
+            className="sm:flex-1"
             onClick={handleGenerate}
           >
             <RefreshCw />
             Gerar novamente
           </Button>
-          <Button size="lg" className="flex-1" onClick={handleCopyAll}>
+          <Button size="lg" className="sm:flex-1" onClick={handleCopyAll}>
             <Copy />
             Copiar tudo
           </Button>
